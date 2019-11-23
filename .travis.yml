@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t ldco2016/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true ldco2016/react-test npm test
+
+after_success:
+  - docker build -t ldco2016/multi-verse-client ./client
+  - docker build -t ldco2016/multi-verse-nginx ./nginx
+  - docker build -t ldco2016/multi-verse-server ./server
+  - docker build -t ldco2016/multi-verse-worker ./worker
+  # Login to Docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take these images and push them to Docker Hub
+  - docker push ldco2016/multi-verse-client
+  - docker push ldco2016/multi-verse-nginx
+  - docker push ldco2016/multi-verse-server
+  - docker push ldco2016/multi-verse-worker
