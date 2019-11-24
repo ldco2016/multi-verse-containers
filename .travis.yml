@@ -22,6 +22,7 @@ after_success:
   - docker push ldco2016/multi-verse-worker
 
   deploy:
+    edge: true
     provider: elasticbeanstalk
     region: us-east-1
     app: multi-verse-containers
